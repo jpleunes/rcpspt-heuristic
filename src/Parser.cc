@@ -32,7 +32,7 @@ using namespace RcpsptHeuristic;
 static void tokenize(const string& str, vector<string>& out) {
     out.clear();
     int i = 0;
-    size_t n = str.size();
+    int n = (int)str.size();
     while (i < n) {
         while ((str[i] == ' ' || str[i] == '\n' || str[i] == '\r') && i < n) i++;
         std::string token;
@@ -119,8 +119,8 @@ Problem Parser::parseProblemInstance(ifstream& input) {
             currResource = (currResource + 1) % nresources;
         }
         else if (section == 6) { // Section "RESOURCEAVAILABILITIES"
-            if (tokens.size() <= 2 * nresources) continue;
-            for (int i = 0; i < tokens.size(); i++)
+            if ((int)tokens.size() <= 2 * nresources) continue;
+            for (int i = 0; i < (int)tokens.size(); i++)
                 result.capacities[currResource][i] = std::stoi(tokens[i]);
             currResource = (currResource + 1) % nresources;
         }

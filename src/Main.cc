@@ -49,7 +49,7 @@ void findInstancesAndSolveAll(const std::string& directory, ofstream& output) {
     std::sort(paths.begin(), paths.end());
 
     std::cout << "Solving " << paths.size() << " problems..." << std::endl;
-    for (int i = 0; i < paths.size(); i++) {
+    for (int i = 0; i < (int)paths.size(); i++) {
         std::ifstream inpFile(paths[i]);
         if (!inpFile) {
             std::cerr << "Can't open input file: " << paths[i] << std::endl;
