@@ -34,6 +34,43 @@ SOFTWARE.
 
 using namespace RcpsptHeuristic;
 
+bool checkValid(const Problem& problem, const int* solution) {
+    // Initialize remaining resource availabilities
+    int** available = new int*[problem.nresources];
+    for (int k = 0; k < problem.nresources; k++) {
+        available[k] = new int[problem.horizon];
+        for (int t = 0; t < problem.horizon; t++)
+            available[k][t] = problem.capacities[k][t];
+    }
+
+    for (int job = 0; job < problem.njobs; job++) {
+        // Precedence constraints
+        for (int predecessor: problem.predecessors[job]) {
+            int start = solution[job] - problem.durations[job];
+            if (start < solution[predecessor]) {
+                std::cout << "invalid precedence!" << std::endl;
+                return false;
+            }
+        }
+    }
+
+    for (int job = 0; job < problem.njobs; job++) {
+        // Resource constraints
+        for (int k = 0; k < problem.nresources; k++) {
+            for (int t = 0; t < problem.durations[job]; t++) {
+                int curr = solution[job] - problem.durations[job] + t;
+                available[k][curr] -= problem.requests[job][k][t];
+                if (available[k][curr] < 0) {
+                    std::cout << "resource demand exceeds availability at t=" << curr << '!' << std::endl;
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 /**
  * Recursively finds all .smt test data files in the given directory, and writes the results to the given output file.
  *
@@ -69,6 +106,7 @@ void findInstancesAndSolveAll(const std::string& directory, ofstream& output) {
         else output << "nosolution" << std::endl;
         output << "cpu_milis " << milis << std::endl;
         output << std::endl;
+        if (found && !checkValid(problem, result)) std::cout << "Invalid solution: " << paths[i] << std::endl;
 
         delete[] result;
         if (i % (paths.size()/100) == 0) std::cout << i / (paths.size()/100) << '%' << std::endl;
@@ -102,6 +140,7 @@ int main(int argc, char** argv) {
         if (found) std::cout << "Makespan: " << result[problem.njobs - 1] << std::endl << std::endl;
         else std::cout << "Found no feasible solution." << std::endl;
         std::cout << "Took " << milis << " ms" << std::endl;
+        if (found) std::cout << "Valid? " << checkValid(problem, result);
 
         delete[] result;
     }

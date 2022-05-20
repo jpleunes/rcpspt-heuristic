@@ -284,41 +284,6 @@ bool PrSolver::solve(int* out) {
     return bestMakespan <= problem.horizon;
 }
 
-bool PrSolver::checkValid(const int* solution) {
-    // Initialize remaining resource availabilities
-    int** available = new int*[problem.nresources];
-    for (int k = 0; k < problem.nresources; k++) {
-        available[k] = new int[problem.horizon];
-        for (int t = 0; t < problem.horizon; t++)
-            available[k][t] = problem.capacities[k][t];
-    }
-
-    for (int job = 0; job < problem.njobs; job++) {
-        // Precedence constraints
-        for (int predecessor : problem.predecessors[job]) {
-            int start = solution[job] - problem.durations[job];
-            if (start < solution[predecessor]) {
-                std::cout << "invalid precedence!" << std::endl;
-                return false;
-            }
-        }
-
-        // Resource constraints
-        for (int k = 0; k < problem.nresources; k++) {
-            for (int t = 0; t < problem.durations[job]; t++) {
-                int curr = solution[job] - problem.durations[job] + t;
-                available[k][curr] -= problem.requests[job][k][t];
-                if (available[k][curr] < 0) {
-                    std::cout << "resource demand exceeds availability at t=" << curr << '!' << std::endl;
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
 bool GaSolver::solve(int *out) {
     // TODO: implement
     return false;
