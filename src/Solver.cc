@@ -245,18 +245,11 @@ bool PrSolver::solve(int* out) {
                 }
                 if (feasible) feasibleFinal = true;
                 if (finish > problem.horizon) {
-                    delete[] ef;
-                    delete[] ls;
-                    delete[] ru;
-                    delete[] cpru;
-                    for (int x = 0; x < problem.nresources; x++) delete[] available[x];
-                    delete[] available;
-                    delete[] eligible;
-                    delete[] selected;
-                    delete[] schedule;
-                    return false;
+                    feasibleFinal = false;
+                    break;
                 }
             }
+            if (!feasibleFinal) break; // Skip the rest of this pass
             schedule[winner] = finish;
 
             // Update remaining resource availabilities
@@ -266,7 +259,7 @@ bool PrSolver::solve(int* out) {
             }
         }
 
-        if (schedule[problem.njobs - 1] < bestMakespan) {
+        if (schedule[problem.njobs - 1] >= 0 && schedule[problem.njobs - 1] < bestMakespan) {
             bestMakespan = schedule[problem.njobs - 1];
             for (int i = 0; i < problem.njobs; i++) out[i] = schedule[i];
         }
