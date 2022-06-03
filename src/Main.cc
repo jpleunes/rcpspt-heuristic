@@ -92,6 +92,7 @@ void findInstancesAndSolveAll(const std::string& directory, ofstream& output) {
             std::cerr << "Can't open input file: " << paths[i] << std::endl;
             exit(1);
         }
+        std::clock_t start_total = std::clock();
         Problem problem = Parser::parseProblemInstance(inpFile);
         inpFile.close();
 
@@ -107,6 +108,7 @@ void findInstancesAndSolveAll(const std::string& directory, ofstream& output) {
         else if (infeasible) output << "infeasible" << std::endl;
         else output << "nosolution" << std::endl;
         output << "cpu_milis " << milis << std::endl;
+        output << "total_milis " << ((std::clock() - start_total) * 1000) / CLOCKS_PER_SEC << std::endl;
         output << std::endl;
         if (found && !checkValid(problem, result)) std::cout << "Invalid solution: " << paths[i] << std::endl;
 
