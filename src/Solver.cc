@@ -134,6 +134,17 @@ bool PrSolver::solve(int* out, bool* infeasible) {
         }
     }
 
+    // Check if any time window is too small: lf[i]-es[i]<durations[i]
+    // using the definition from Hartmann (2013) (reference in README.md)
+    for (int i = 0; i < problem.njobs; i++) {
+        if ((ls[i] + problem.durations[i]) - (ef[i] - problem.durations[i]) < problem.durations[i]) {
+            delete[] ef;
+            delete[] ls;
+            *infeasible = true;
+            return false;
+        }
+    }
+
     // Calculate extended resource utilization values, using the definition from Hartmann (2013) (reference in README.md)
 
     double* ru = new double[problem.njobs];
