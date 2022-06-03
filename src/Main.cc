@@ -96,13 +96,15 @@ void findInstancesAndSolveAll(const std::string& directory, ofstream& output) {
         inpFile.close();
 
         int* result = new int[problem.njobs];
+        bool infeasible = false;
         std::clock_t start = std::clock();
-        bool found = PrSolver(problem).solve(result);
+        bool found = PrSolver(problem).solve(result, &infeasible);
         std::clock_t end = std::clock();
 
-        long milis = ((end - start) * 1000) / CLOCKS_PER_SEC;
+        long milis = ((end - start) * 1000) / CLOCKS_PER_SEC; // TODO: write to file in proper format
         output << paths[i] << std::endl;
         if (found) output << "makespan " << result[problem.njobs - 1] << std::endl;
+        else if (infeasible) output << "infeasible" << std::endl;
         else output << "nosolution" << std::endl;
         output << "cpu_milis " << milis << std::endl;
         output << std::endl;
@@ -132,12 +134,14 @@ int main(int argc, char** argv) {
         inpFile.close();
 
         int *result = new int[problem.njobs];
+        bool infeasible = false;
         std::clock_t start = std::clock();
-        bool found = PrSolver(problem).solve(result);
+        bool found = PrSolver(problem).solve(result, &infeasible);
         std::clock_t end = std::clock();
 
         long milis = ((end - start) * 1000) / CLOCKS_PER_SEC;
         if (found) std::cout << "Makespan: " << result[problem.njobs - 1] << std::endl << std::endl;
+        else if (infeasible) std::cout << "Preprocessing found instance to be infeasible" << std::endl;
         else std::cout << "Found no feasible solution." << std::endl;
         std::cout << "Took " << milis << " ms" << std::endl;
         if (found) std::cout << "Valid? " << checkValid(problem, result);

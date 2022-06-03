@@ -39,14 +39,15 @@ Solver::Solver(Problem &p)
 
 Solver::~Solver() = default;
 
-bool Solver::solve(int* out) {
+bool Solver::solve(int* out, bool* infeasible) {
     std::cerr << "Calling solve(int* out) is not supported on abstract base class Solver" << std::endl;
 
     return false;
 }
 
-bool PrSolver::solve(int* out) {
+bool PrSolver::solve(int* out, bool* infeasible) {
     // This function is completely based on the tournament heuristic that is described by Hartmann (2013) (reference in README.md)
+    *infeasible = false;
 
     std::queue<int> q; // Use a queue for breadth-first traversal of the precedence graph
 
@@ -77,6 +78,7 @@ bool PrSolver::solve(int* out) {
             if (feasible) feasibleFinal = true;
             if (ef[job] > problem.horizon) {
                 delete[] ef;
+                *infeasible = true;
                 return false;
             }
         }
@@ -119,6 +121,7 @@ bool PrSolver::solve(int* out) {
             if (ls[job] < 0) {
                 delete[] ef;
                 delete[] ls;
+                *infeasible = true;
                 return false;
             }
         }

@@ -43,9 +43,10 @@ public:
      * Calculates a solution for the problem.
      *
      * @param out vector to which end times for all activities will be written
+     * @param infeasible indicates whether the preprocessing steps found the instance to be infeasible
      * @return true if a solution was found, false otherwise
      */
-    virtual bool solve(int* out);
+    virtual bool solve(int* out, bool* infeasible);
 
 protected:
     Problem& problem;
@@ -59,15 +60,7 @@ public:
     explicit PrSolver(Problem& p)
         : Solver(p) {}
 
-    bool solve(int* out);
-
-    /**
-     * Checks whether a given solution is valid for the problem. May be useful for debugging the solver.
-     *
-     * @param solution the solution to check
-     * @return true if valid, false otherwise
-     */
-    bool checkValid(const int* solution);
+    bool solve(int* out, bool* infeasible);
 };
 
 /**
