@@ -1,4 +1,7 @@
 # Heuristic Solver for RCPSP/t
+This repository is part of the [Research Project](https://github.com/TU-Delft-CSE/Research-Project) (2022) of [TU Delft](https://https//github.com/TU-Delft-CSE).
+The implementations were written for a bachelor thesis on "SAT-based optimisation for the resource-constrained project scheduling problem with time-dependent resource capacities and requests" by Jelle Pleunes, supervised by Emir Demirović.
+
 Implementation of a tournament heuristic using a priority rule, for solving the RCPSP/t (Resource-Constrained Project Scheduling Problem with Time-Dependent Resource Capacities and Requests).
 
 **This is my own implementation of the heuristic algorithm as it is described in a 2013 paper by Sönke Hartmann:**<br />
